@@ -19,6 +19,10 @@ resource "aws_codebuild_project" "shark_build" {
       name  = "ECR_REPO"
       value = data.aws_ecr_repository.shark-website.repository_url
     }
+    environment_variable {
+      name  = "ENVIRONMENT"
+      value = var.environment
+    }
   }
   source {
     type                = "GITHUB"

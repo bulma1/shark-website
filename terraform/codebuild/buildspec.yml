@@ -9,9 +9,9 @@ phases:
     commands:
       - echo Building the Docker image...
       - docker build -t shark-website .
-      - docker tag shark-website:latest $ECR_REPO:latest
+      - docker tag shark-website:latest $ECR_REPO:$ENVIRONMENT
   post_build:
     commands:
       - echo Pushing the Docker image to ECR...
-      - docker push $ECR_REPO:latest
+      - docker push $ECR_REPO:$ENVIRONMENT
       - echo Build completed successfully
