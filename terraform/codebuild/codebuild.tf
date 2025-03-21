@@ -13,7 +13,7 @@ resource "aws_codebuild_project" "shark_build" {
     privileged_mode = true # Required for Docker builds
     environment_variable {
       name  = "AWS_REGION"
-      value = "us-east-2" # Matches your region
+      value = var.aws_region
     }
     environment_variable {
       name  = "ECR_REPO"

@@ -50,7 +50,7 @@ resource "aws_iam_role_policy" "codebuild_policy" {
           "codeconnections:GetConnection",
           "codeconnections:ListConnections"
         ]
-        Resource = "arn:aws:codeconnections:us-east-2:296062573273:connection/30c8d5e6-eda7-44b5-a4eb-6a6298a29ac4"
+        Resource = "arn:aws:codeconnections:us-east-2:296062573273:connection/9bec4cc9-d38b-4a1c-b707-1884f9b64cfa"
       }
     ]
   })
