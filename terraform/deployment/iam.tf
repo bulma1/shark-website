@@ -90,6 +90,7 @@ resource "aws_iam_role_policy_attachment" "codedeploy_attachment" {
   role       = aws_iam_role.codedeploy_service_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
 }
+
 resource "aws_iam_role_policy" "codedeploy_s3_access" {
   name = "${var.provider_name}-${var.environment}-${var.app_name}-s3-access"
   role = aws_iam_role.codedeploy_service_role.id
