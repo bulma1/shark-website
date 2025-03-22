@@ -178,6 +178,18 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
         Effect   = "Allow"
         Action   = "iam:PassRole"
         Resource = "*"
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "s3:GetObject",
+          "s3:GetObjectVersion",
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::buma-dev-shark-website-codepipeline-artifacts",
+          "arn:aws:s3:::buma-dev-shark-website-codepipeline-artifacts/*"
+        ]
       }
     ]
   })
