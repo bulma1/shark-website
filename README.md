@@ -61,6 +61,10 @@ shark-website/
 ### Containerization 🚢
 **Docker**: Packages the app for smooth and consistent running.
 
+## Important Note 
+
+Create git connection Dev Tools AWS Console
+
 ## Authors
 
 - [@bulma1](https://www.github.com/bulma1)
