@@ -98,38 +98,38 @@ resource "aws_iam_role_policy_attachment" "codedeploy_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
 }
 
-resource "aws_iam_policy" "codedeploy_s3_access" {
-  name        = "${var.provider_name}-${var.environment}-${var.app_name}-s3-access-policy"
-  description = "Allow CodeDeploy to access S3 deployment artifacts"
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow",
-        Action = [
-          "s3:GetObject",
-          "s3:GetObjectVersion",
-          "s3:ListBucket",
-          "s3:ListBucketVersions",
-          "s3:GetBucketLocation",
-          "s3:GetObjectAcl"
-        ],
-        Resource = [
-          "arn:aws:s3:::buma-dev-shark-website-codepipeline-artifacts",
-          "arn:aws:s3:::buma-dev-shark-website-codepipeline-artifacts/*"
-        ]
-      }
-    ]
-  })
-}
+# resource "aws_iam_policy" "codedeploy_s3_access" {
+#   name        = "${var.provider_name}-${var.environment}-${var.app_name}-s3-access-policy"
+#   description = "Allow CodeDeploy to access S3 deployment artifacts"
+#
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Effect = "Allow",
+#         Action = [
+#           "s3:GetObject",
+#           "s3:GetObjectVersion",
+#           "s3:ListBucket",
+#           "s3:ListBucketVersions",
+#           "s3:GetBucketLocation",
+#           "s3:GetObjectAcl"
+#         ],
+#         Resource = [
+#           "arn:aws:s3:::buma-dev-shark-website-codepipeline-artifacts",
+#           "arn:aws:s3:::buma-dev-shark-website-codepipeline-artifacts/*"
+#         ]
+#       }
+#     ]
+#   })
+# }
 resource "aws_iam_role_policy_attachment" "codedeploy_s3_attachment" {
   role       = aws_iam_role.codedeploy_service_role.name
   policy_arn = aws_iam_policy.codedeploy_s3_access.arn
 }
-resource "aws_iam_role_policy" "codedeploy_s3_access" {
+resource "aws_iam_policy" "codedeploy_s3_access" {
   name = "${var.provider_name}-${var.environment}-${var.app_name}-s3-access"
-  role = aws_iam_role.codedeploy_service_role.id
+
 
   policy = jsonencode({
     Version = "2012-10-17"
