@@ -1,14 +1,14 @@
 version: 0.0
 os: linux
 files:
-  - source: /  # Deploys all files from the artifact root (artifacts/)
+  - source: /
     destination: /home/ec2-user/app
 hooks:
   BeforeInstall:
-    - location: artifacts/scripts/pull_image.sh
+    - location: build_output/scripts/pull_image.sh  # Updated to match buildspec.yml
       timeout: 300
       runas: root
   ApplicationStart:
-    - location: artifacts/scripts/start_service.sh
+    - location: build_output/scripts/start_service.sh  # Updated to match buildspec.yml
       timeout: 300
       runas: root

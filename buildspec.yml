@@ -14,18 +14,17 @@ phases:
     commands:
       - echo Pushing the Docker image to ECR...
       - docker push $ECR_REPO:$ENVIRONMENT
-      - echo Build completed successfully
       - echo Preparing deployment artifacts...
-      - mkdir -p artifacts/scripts
-      - cp -r scripts/* artifacts/scripts/ || echo "No scripts in repo, generating them"
+      - mkdir -p build_output/scripts
+      - cp -r scripts/* build_output/scripts/ || echo "No scripts in repo, generating them"
       - |
-        cat << 'EOF' > artifacts/scripts/pull_image.sh
+        cat << 'EOF' > build_output/scripts/pull_image.sh
         #!/bin/bash
         aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REPO}
         docker pull ${ECR_REPO}:${ENVIRONMENT}
         EOF
       - |
-        cat << 'EOF' > artifacts/scripts/start_service.sh
+        cat << 'EOF' > build_output/scripts/start_service.sh
         #!/bin/bash
         docker stop shark-website || true
         docker rm shark-website || true
@@ -37,10 +36,11 @@ phases:
           --restart unless-stopped \
           ${ECR_REPO}:${ENVIRONMENT}
         EOF
-      - chmod +x artifacts/scripts/pull_image.sh artifacts/scripts/start_service.sh
-      - cp appspec.yml artifacts/ || echo "Failed to copy appspec.yml, check repo"
+      - chmod +x build_output/scripts/pull_image.sh build_output/scripts/start_service.sh
+      - cp appspec.yml build_output/ || echo "Failed to copy appspec.yml, check repo"
 
 artifacts:
   files:
-    - artifacts/**
+    - build_output/**
   discard-paths: no
+  name: build_output
