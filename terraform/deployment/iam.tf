@@ -103,7 +103,8 @@ resource "aws_iam_role_policy" "codedeploy_s3_access" {
         Action = [
           "s3:GetObject",
           "s3:GetObjectVersion",
-          "s3:ListBucket"
+          "s3:ListBucket",
+          "s3:GetBucketLocation"
         ],
         Resource = [
           "arn:aws:s3:::buma-dev-shark-website-codepipeline-artifacts",
@@ -113,6 +114,7 @@ resource "aws_iam_role_policy" "codedeploy_s3_access" {
     ]
   })
 }
+
 # CodePipeline IAM Role
 resource "aws_iam_role" "codepipeline_role" {
   name = "${var.provider_name}-${var.environment}-${var.app_name}-codepipeline-role"
