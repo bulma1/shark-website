@@ -5,10 +5,10 @@ files:
     destination: /home/ec2-user/app
 hooks:
   BeforeInstall:
-    - location: build_output/scripts/pull_image.sh  # Updated to match buildspec.yml
+    - location: scripts/pull_image.sh  # Updated to match buildspec.yml
       timeout: 300
       runas: root
   ApplicationStart:
-    - location: build_output/scripts/start_service.sh  # Updated to match buildspec.yml
+    - location: scripts/start_service.sh  # Updated to match buildspec.yml
       timeout: 300
       runas: root
