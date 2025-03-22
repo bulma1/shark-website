@@ -19,11 +19,10 @@ phases:
       - echo Build completed successfully
       - echo Preparing deployment artifacts...
       - mkdir -p artifacts/scripts
-      - cp scripts/pull_image.sh artifacts/scripts/
-      - cp scripts/start_service.sh artifacts/scripts/
+      - cp -r scripts/* artifacts/scripts/ || echo "No scripts to copy"
       - cp appspec.yml artifacts/
 
 artifacts:
   files:
-    - artifacts/**  # Ensures all deployment files are included
+    - artifacts/**
   discard-paths: no

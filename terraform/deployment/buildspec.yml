@@ -17,10 +17,12 @@ phases:
       - echo Pushing the Docker image to ECR...
       - docker push $ECR_REPO:$ENVIRONMENT
       - echo Build completed successfully
+      - echo Preparing deployment artifacts...
+      - mkdir -p artifacts/scripts
+      - cp -r scripts/* artifacts/scripts/ || echo "No scripts to copy"
+      - cp appspec.yml artifacts/
 
 artifacts:
   files:
-    - pull_image.sh
-    - start_service.sh
-    - appspec.yml  # Ensure your AppSpec file is included for CodeDeploy
-  discard-paths: yes
+    - artifacts/**
+  discard-paths: no
