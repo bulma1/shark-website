@@ -2,10 +2,10 @@ version: 0.0
 os: linux
 hooks:
   BeforeInstall:
-    - location: scripts/pull_image.sh
+    - location: artifacts/scripts/pull_image.sh
       timeout: 300
       runas: root
   ApplicationStart:
-    - location: scripts/start_service.sh
+    - location: artifacts/scripts/start_service.sh
       timeout: 300
       runas: root
