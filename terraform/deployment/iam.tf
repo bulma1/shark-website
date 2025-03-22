@@ -90,6 +90,28 @@ resource "aws_iam_role_policy_attachment" "codedeploy_attachment" {
   role       = aws_iam_role.codedeploy_service_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
 }
+resource "aws_iam_role_policy" "codedeploy_s3_access" {
+  name = "${var.provider_name}-${var.environment}-${var.app_name}-s3-access"
+  role = aws_iam_role.codedeploy_service_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "s3:GetObject",
+          "s3:GetObjectVersion",
+          "s3:ListBucket"
+        ],
+        Resource = [
+          "arn:aws:s3:::buma-dev-shark-website-codepipeline-artifacts",
+          "arn:aws:s3:::buma-dev-shark-website-codepipeline-artifacts/*"
+        ]
+      }
+    ]
+  })
+}
 # CodePipeline IAM Role
 resource "aws_iam_role" "codepipeline_role" {
   name = "${var.provider_name}-${var.environment}-${var.app_name}-codepipeline-role"
@@ -124,6 +146,7 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
           "codedeploy:CreateDeployment",
           "codedeploy:GetApplication",
           "codedeploy:GetDeployment",
+          "s3:ListBucket",
           "s3:GetObject",
           "s3:GetObjectVersion",
           "s3:PutObject",
