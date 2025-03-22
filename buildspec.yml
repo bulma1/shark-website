@@ -17,7 +17,27 @@ phases:
       - echo Build completed successfully
       - echo Preparing deployment artifacts...
       - mkdir -p artifacts/scripts
-      - cp -r scripts/* artifacts/scripts/ || echo "No scripts to copy"
+      - cp -r scripts/* artifacts/scripts/ || echo "No scripts in repo, generating them"
+      - |
+        cat << 'EOF' > artifacts/scripts/pull_image.sh
+        #!/bin/bash
+        aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REPO}
+        docker pull ${ECR_REPO}:${ENVIRONMENT}
+        EOF
+      - |
+        cat << 'EOF' > artifacts/scripts/start_service.sh
+        #!/bin/bash
+        docker stop shark-website || true
+        docker rm shark-website || true
+        docker run -d \
+          --name shark-website \
+          --user node \
+          -p 80:8080 \
+          -v /home/ec2-user/app-logs:/home/node/app/logs \
+          --restart unless-stopped \
+          ${ECR_REPO}:${ENVIRONMENT}
+        EOF
+      - chmod +x artifacts/scripts/pull_image.sh artifacts/scripts/start_service.sh
       - cp appspec.yml artifacts/
 
 artifacts:
