@@ -2,7 +2,28 @@
 # Shark Website 🐬
 
 Welcome to Shark Website, a sleek and dynamic web application 🌊
+# My Project Structure 📁
 
+shark-website/  
+├── README.md                                       
+├── app.js                  
+├── views/                
+│   ├── css/                
+│   │   ├── styles.css    
+│   ├── index.html        
+│   ├── sharks.html        
+├── Dockerfile            
+├── appspec.yml           
+├── buildspec.yml           
+├── package.json          
+├── package-lock.json     
+├── terraform/            
+│   ├── backend/            
+│   ├── deployment/        
+│   ├── infra/           
+├── scripts/              
+│   ├── pull_image.sh    
+│   ├── start_service.sh
 
 ## Tech Stack 💻
 ### Aplication ☀️
