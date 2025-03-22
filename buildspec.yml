@@ -14,17 +14,16 @@ phases:
     commands:
       - echo Pushing the Docker image to ECR...
       - docker push $ECR_REPO:$ENVIRONMENT
-      - echo Build completed successfully
       - echo Preparing deployment artifacts...
       - mkdir -p scripts
       - |
-        cat << 'EOF' > scripts/pull_image.sh
+        cat << EOF > scripts/pull_image.sh
         #!/bin/bash
-        aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REPO}
-        docker pull ${ECR_REPO}:${ENVIRONMENT}
+        aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPO
+        docker pull $ECR_REPO:$ENVIRONMENT
         EOF
       - |
-        cat << 'EOF' > scripts/start_service.sh
+        cat << EOF > scripts/start_service.sh
         #!/bin/bash
         docker stop shark-website || true
         docker rm shark-website || true
@@ -34,7 +33,7 @@ phases:
           -p 80:8080 \
           -v /home/ec2-user/app-logs:/home/node/app/logs \
           --restart unless-stopped \
-          ${ECR_REPO}:${ENVIRONMENT}
+          $ECR_REPO:$ENVIRONMENT
         EOF
       - chmod +x scripts/pull_image.sh scripts/start_service.sh
 
