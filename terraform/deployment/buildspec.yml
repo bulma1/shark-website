@@ -10,8 +10,54 @@ phases:
       - echo Building the Docker image...
       - docker build -t shark-website .
       - docker tag shark-website:latest $ECR_REPO:$ENVIRONMENT
+      - echo Preparing application files for S3...
+      - mkdir -p build_output
+      - cp -r ./* build_output/  # Copy source files to build_output
+      - |
+        cat << 'EOF' > build_output/appspec.yml
+        version: 0.0
+        os: linux
+        files:
+          - source: /
+            destination: /home/ec2-user/app
+        hooks:
+          BeforeInstall:
+            - location: pull_image.sh
+              timeout: 300
+              runas: root
+          ApplicationStart:
+            - location: start_service.sh
+              timeout: 300
+              runas: root
+        EOF
+      - |
+        cat << 'EOF' > build_output/pull_image.sh
+        #!/bin/bash
+        aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REPO}
+        docker pull ${ECR_REPO}:${ENVIRONMENT}
+        EOF
+      - |
+        cat << 'EOF' > build_output/start_service.sh
+        #!/bin/bash
+        docker stop shark-website || true
+        docker rm shark-website || true
+        docker run -d \
+          --name shark-website \
+          --user node \
+          -p 80:8080 \
+          -v /home/ec2-user/app-logs:/home/node/app/logs \
+          --restart unless-stopped \
+          ${ECR_REPO}:${ENVIRONMENT}
+        EOF
+      - chmod +x build_output/pull_image.sh build_output/start_service.sh
   post_build:
     commands:
       - echo Pushing the Docker image to ECR...
       - docker push $ECR_REPO:$ENVIRONMENT
-      - echo Build completed successfully
+      - echo Build and artifact preparation completed successfully
+
+artifacts:
+  files:
+    - build_output/*
+  base-directory: build_output
+  name: build_output

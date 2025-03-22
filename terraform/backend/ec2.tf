@@ -10,6 +10,7 @@ resource "aws_instance" "shark_instance" {
               sudo service docker start
               sudo usermod -a -G docker ec2-user
 
+              mkdir -p /home/ec2-user/app /home/ec2-user/app-logs
               # Install CodeDeploy Agent
               sudo yum install ruby -y
               wget https://aws-codedeploy-${var.aws_region}.s3.${var.aws_region}.amazonaws.com/latest/install

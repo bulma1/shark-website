@@ -104,12 +104,24 @@ resource "aws_iam_role_policy" "codedeploy_s3_access" {
           "s3:GetObject",
           "s3:GetObjectVersion",
           "s3:ListBucket",
-          "s3:GetBucketLocation"
+          "s3:ListBucketVersions",
+          "s3:GetBucketLocation",
+          "s3:GetObjectAcl"
         ],
         Resource = [
           "arn:aws:s3:::buma-dev-shark-website-codepipeline-artifacts",
           "arn:aws:s3:::buma-dev-shark-website-codepipeline-artifacts/*"
         ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetAuthorizationToken"
+        ]
+        Resource = "*"
       }
     ]
   })
@@ -183,13 +195,13 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
         Resource = "*"
       },
       {
-        "Effect": "Allow",
-        "Action": [
+        "Effect" : "Allow",
+        "Action" : [
           "s3:GetObject",
           "s3:GetObjectVersion",
           "s3:ListBucket"
         ],
-        "Resource": [
+        "Resource" : [
           "arn:aws:s3:::buma-dev-shark-website-codepipeline-artifacts",
           "arn:aws:s3:::buma-dev-shark-website-codepipeline-artifacts/*"
         ]
