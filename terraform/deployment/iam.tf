@@ -158,6 +158,13 @@ resource "aws_iam_policy" "codedeploy_s3_access" {
           "ecr:GetAuthorizationToken"
         ]
         Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "kms:Decrypt"
+        ]
+        Resource = "arn:aws:kms:${var.aws_region}:${var.account_id}:key/*"
       }
     ]
   })

@@ -18,3 +18,7 @@ variable "environment" {
     error_message = "The environment must be one of: dev, staging, or prod."
   }
 }
+variable "account_id" {
+  type = string
+  default = "296062573273"
+}

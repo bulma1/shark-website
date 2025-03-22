@@ -38,7 +38,7 @@ phases:
           ${ECR_REPO}:${ENVIRONMENT}
         EOF
       - chmod +x artifacts/scripts/pull_image.sh artifacts/scripts/start_service.sh
-      - cp appspec.yml artifacts/
+      - cp appspec.yml artifacts/ || echo "Failed to copy appspec.yml, check repo"
 
 artifacts:
   files:
