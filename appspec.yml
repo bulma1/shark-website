@@ -7,8 +7,8 @@ hooks:
   BeforeInstall:
     - location: scripts/pull_image.sh
       timeout: 300
-      runas: root
+      runas: ec2-user  # Changed from root to ec2-user
   ApplicationStart:
     - location: scripts/start_service.sh
       timeout: 300
-      runas: root
+      runas: ec2-user  # Changed from root to ec2-user
