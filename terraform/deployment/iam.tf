@@ -212,6 +212,18 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
           "arn:aws:s3:::buma-dev-shark-website-codepipeline-artifacts",
           "arn:aws:s3:::buma-dev-shark-website-codepipeline-artifacts/*"
         ]
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "codedeploy:GetDeploymentConfig",
+          "codedeploy:CreateDeployment",
+          "codedeploy:GetApplication",
+          "codedeploy:GetDeployment",
+          "codedeploy:ListDeployments",
+          "codedeploy:RegisterApplicationRevision"
+        ],
+        "Resource": "*"
       }
     ]
   })
