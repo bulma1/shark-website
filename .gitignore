@@ -21,3 +21,7 @@ override.tf.json
 # Miscellaneous
 .DS_Store
 *.log
+
+*.infracost
+
+*.idea
