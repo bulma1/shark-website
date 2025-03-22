@@ -97,6 +97,9 @@ resource "aws_iam_role_policy_attachment" "codedeploy_attachment" {
   role       = aws_iam_role.codedeploy_service_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
 }
+# Add AmazonS3ReadOnlyAccess codedeploy-role
+# Add buma-dev-shark-website-s3-access codedeploy-role
+
 
 # resource "aws_iam_policy" "codedeploy_s3_access" {
 #   name        = "${var.provider_name}-${var.environment}-${var.app_name}-s3-access-policy"
