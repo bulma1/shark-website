@@ -4,7 +4,10 @@ resource "aws_codebuild_project" "shark_build" {
   description   = "Build project of shark website"
   service_role  = aws_iam_role.codebuild_role.arn
   artifacts {
-    type = "CODEPIPELINE" # Outputs artifacts to CodePipeline
+    type = "S3"
+    location = aws_s3_bucket.codepipeline_bucket.bucket
+    packaging = "ZIP"
+    name = "build_output.zip"
   }
   environment {
     compute_type    = "BUILD_GENERAL1_SMALL"
@@ -25,8 +28,12 @@ resource "aws_codebuild_project" "shark_build" {
     }
   }
   source {
-    type      = "CODEPIPELINE"
-    buildspec = "buildspec.yml"
+    type                = "GITHUB"
+    location            = "https://github.com/bulma1/shark-website.git" # Your repo
+    git_clone_depth     = 1
+    buildspec           = "buildspec.yml"
+    insecure_ssl        = false
+    report_build_status = false
   }
   # Webhook to trigger builds on GitHub push
   source_version = "main" # Adjust if your default branch is different
