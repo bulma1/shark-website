@@ -1,12 +1,10 @@
 const express = require('express');
 const app = express();
 const router = express.Router();
-const morgan = require('morgan');
 const path = __dirname + '/views/';
 const port = 8080;
 const winston = require('winston');
-// Use Morgan to log detailed request info
-// app.use(morgan(':method :url :status :response-time ms - :res[content-length]'));
+
 // ✅ Setup Winston Logger
 const logger = winston.createLogger({
   level: 'info', // Default level
