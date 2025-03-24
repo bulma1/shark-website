@@ -11,18 +11,18 @@ jobs:
     name: Lint Code
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: "☁️ Checkout code ..."
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: "🔧 Set up Node.js"
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Install dependencies
+      - name: "🔧 Install dependencies"
         run: npm install
 
-      - name: Run ESLint
+      - name: "📦 Run ESLint"
         run: npm run lint # Ensure package.json has "lint": "eslint app.js"
 
   build:
@@ -30,18 +30,18 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint # Run only if linting passes
     steps:
-      - name: Checkout code
+      - name: "☁️ Checkout code ..."
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: "🔧 Set up Node.js"
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Install dependencies
+      - name: "🔧 Install dependencies"
         run: npm install
 
-      - name: Build the app
+      - name: "🚀 Build the app "
         run: npm run build # Ensure you have a build script in package.json
 
   test:
@@ -49,24 +49,24 @@ jobs:
     runs-on: ubuntu-latest
     needs: build # Run only if build passes
     steps:
-      - name: Checkout code
+      - name: "☁️ Checkout code ..."
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: "🔧 Set up Node.js"
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Install dependencies
+      - name: "🔧 Install dependencies"
         run: npm install
 
-      - name: Run tests
+      - name: "🔎 Run tests "
         run: npm test
 
-      - name: Run tests with coverage
+      - name: "🚀 Run tests with coverage"
         run: npm test -- --coverage
 
-      - name: Upload coverage reports
+      - name: " 📁 Upload coverage reports"
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
@@ -77,25 +77,25 @@ jobs:
     runs-on: ubuntu-latest
     needs: test # Run only if tests pass
     steps:
-      - name: Checkout code
+      - name: "☁️ Checkout code ..."
         uses: actions/checkout@v4
 
-      - name: Get Date and Commit Hash
+      - name: " 👀 Get Date and Commit Hash"
         run: |
           echo "DATE_TAG=$(date +'%Y%m%d')" >> $GITHUB_ENV
           echo "GIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
-      - name: Build Docker image
+      - name: "🔧 Build Docker image"
         run: docker build -t shark-website:$DATE_TAG -t shark-website:$GIT_HASH .
 
-      - name: Run Docker container for testing
+      - name: "🐳 Run Docker container for testing"
         run: docker run -d -p 8080:8080 --name shark-website shark-website:$DATE_TAG
 
-      - name: Wait for container to be ready
+      - name: "⏰ Wait for container to be ready"
         run: sleep 5  # Wait for the server to start
 
-      - name: Test running container
+      - name: "🔎 Test running container"
         run: curl --fail http://localhost:8080 || exit 1
 
-      - name: Stop and remove container
+      - name: " 💥 Stop and remove container"
         run: docker stop shark-website && docker rm shark-website
