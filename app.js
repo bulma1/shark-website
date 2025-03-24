@@ -16,7 +16,12 @@ const logger = winston.createLogger({
   ),
   transports: [
     new winston.transports.Console(), // Log to console
-    new winston.transports.File({ filename: 'app.log' }) // Save logs to a file
+    new winston.transports.File({
+      filename: 'app.log',
+      maxsize: 10000000,
+      maxFiles: 10,
+      zippedArchive: true
+    }) // Save logs to a file
   ]
 });
 
@@ -61,5 +66,3 @@ if (require.main === module) {
 }
 
 module.exports = app;
-
-
