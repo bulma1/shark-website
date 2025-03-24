@@ -19,6 +19,14 @@ router.get('/sharks', function(req,res){
 app.use(express.static(path));
 app.use('/', router);
 
-app.listen(port, function () {
-  console.log('Example app listening on port 8080!')
-})
+// app.listen(port, function () {
+//   console.log('Example app listening on port 8080!')
+// })
+// Only start the server if this file is run directly
+if (require.main === module) {
+  app.listen(port, function() {
+    console.log(`Example app listening on port ${port}!`);
+  });
+}
+
+module.exports = app;

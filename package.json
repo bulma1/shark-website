@@ -2,6 +2,9 @@
   "name": "nodejs-image-demo",
   "version": "1.0.0",
   "description": "nodejs image demo",
+  "scripts": {
+    "test": "jest --coverage"
+  },
   "author": "Buma",
   "license": "MIT",
   "main": "app.js",
@@ -12,5 +15,9 @@
   ],
   "dependencies": {
     "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.1.0"
   }
 }
