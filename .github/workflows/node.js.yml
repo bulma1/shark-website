@@ -28,11 +28,8 @@ jobs:
       - name: "🚀 Build the app "
         run: npm run build # Ensure you have a build script in package.json
 
-      - name: "🔎 Run tests "
+      - name: "🔎 Run tests with coverage"
         run: npm test
-
-      - name: "🚀 Run tests with coverage"
-        run: npm test -- --coverage
 
       - name: " 📁 Upload coverage reports"
         uses: actions/upload-artifact@v4
