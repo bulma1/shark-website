@@ -13,3 +13,11 @@ provider "aws" {
   region = var.aws_region
 }
 
+terraform {
+  backend "s3" {
+    bucket = "buma-dev-shark-website-s3"
+    key = "shark-website-backend"
+    region = "us-east-2"
+    workspace_key_prefix = ""
+  }
+}
