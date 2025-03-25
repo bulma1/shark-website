@@ -8,7 +8,7 @@ on:
 
 jobs:
   lint:
-    name: Lint Code
+    name: Lint Code And Test
     runs-on: ubuntu-latest
     steps:
       - name: "☁️ Checkout code ..."
@@ -25,40 +25,8 @@ jobs:
       - name: "📦 Run ESLint"
         run: npm run lint # Ensure package.json has "lint": "eslint app.js"
 
-  build:
-    name: Build Application
-    runs-on: ubuntu-latest
-    needs: lint # Run only if linting passes
-    steps:
-      - name: "☁️ Checkout code ..."
-        uses: actions/checkout@v4
-
-      - name: "🔧 Set up Node.js"
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
-      - name: "🔧 Install dependencies"
-        run: npm install
-
       - name: "🚀 Build the app "
         run: npm run build # Ensure you have a build script in package.json
-
-  test:
-    name: Run Tests
-    runs-on: ubuntu-latest
-    needs: build # Run only if build passes
-    steps:
-      - name: "☁️ Checkout code ..."
-        uses: actions/checkout@v4
-
-      - name: "🔧 Set up Node.js"
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
-      - name: "🔧 Install dependencies"
-        run: npm install
 
       - name: "🔎 Run tests "
         run: npm test
@@ -71,6 +39,7 @@ jobs:
         with:
           name: coverage-report
           path: coverage # Upload Jest coverage report
+
 
   docker:
     name: Build & Test Docker Image
