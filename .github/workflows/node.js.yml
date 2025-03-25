@@ -44,7 +44,7 @@ jobs:
   docker:
     name: Build & Test Docker Image
     runs-on: ubuntu-latest
-    needs: test # Run only if tests pass
+    needs: lint # Run only if tests pass
     steps:
       - name: "☁️ Checkout code ..."
         uses: actions/checkout@v4
