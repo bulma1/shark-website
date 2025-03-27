@@ -30,6 +30,31 @@ resource "aws_instance" "shark_instance" {
 
               # Ensure CodeDeploy agent is enabled on boot
               sudo systemctl enable codedeploy-agent
+
+              # Install CloudWatch Agent
+              sudo yum install -y amazon-cloudwatch-agent
+              # Create CloudWatch Agent configuration for Docker logs
+              cat <<EOT > /opt/aws/amazon-cloudwatch-agent/etc/cloudwatch-agent-config.json
+              {
+                "logs": {
+                  "logs_collected": {
+                    "files": {
+                      "collect_list": [
+                        {
+                          "file_path": "/var/lib/docker/containers/*/*.log",
+                          "log_group_name": "docker-logs",
+                          "log_stream_name": "{instance_id}",
+                          "timestamp_format": "%Y-%m-%dT%H:%M:%S.%fZ"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+              EOT
+              # Start CloudWatch Agent
+              sudo systemctl enable amazon-cloudwatch-agent
+              sudo systemctl start amazon-cloudwatch-agent
               EOF
   tags = {
     Name        = "${var.app_name}"
