@@ -207,6 +207,7 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
           "codedeploy:CreateDeployment",
           "codedeploy:GetApplication",
           "codedeploy:GetDeployment",
+          "codedeploy:GetApplicationRevision",
           "s3:ListBucket",
           "s3:GetObject",
           "s3:GetObjectVersion",
