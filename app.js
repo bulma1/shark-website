@@ -4,7 +4,8 @@ const router = express.Router();
 const path = __dirname + '/views/';
 const port = 8080;
 const winston = require('winston');
-
+// List of example users
+const exampleUsers = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Grace'];
 // ✅ Setup Winston Logger
 const logger = winston.createLogger({
   level: 'info', // Default level
@@ -27,7 +28,10 @@ const logger = winston.createLogger({
 
 // ✅ Middleware to Log Requests with Different Levels
 app.use((req, res, next) => {
-  logger.info(`Incoming request: ${req.method} ${req.url}`);
+  // Use query param if provided, otherwise pick a random user from the list
+  const userId = req.query.userId || exampleUsers[Math.floor(Math.random() * exampleUsers.length)];
+  req.user = { id: userId }; // Attach user to request object
+  logger.info(`Incoming request from user ${req.user.id}: ${req.method} ${req.url}`);
   next();
 });
 router.use(function (req,res,next) {
@@ -35,13 +39,13 @@ router.use(function (req,res,next) {
   next();
 });
 // Router
-router.get('/', function(req,res){
-  logger.debug('Serving index.html');
+router.get('/', function(req, res) {
+  logger.debug(`User ${req.user.id} requested index.html`);
   res.sendFile(path + 'index.html');
 });
 
-router.get('/sharks', function(req,res){
-  logger.debug('Serving sharks.html');
+router.get('/sharks', function(req, res) {
+  logger.debug(`User ${req.user.id} requested sharks.html`);
   res.sendFile(path + 'sharks.html');
 });
 // Simulating Different Log Levels
