@@ -4,68 +4,108 @@ const router = express.Router();
 const path = __dirname + '/views/';
 const port = 8080;
 const winston = require('winston');
+
 // List of example users
 const exampleUsers = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Grace'];
-// ✅ Setup Winston Logger
+
+// ✅ Setup Winston Logger with JSON Format
 const logger = winston.createLogger({
-  level: 'info', // Default level
+  level: 'info',
   format: winston.format.combine(
       winston.format.timestamp(),
-      winston.format.printf(({ level, message, timestamp }) => {
-        return `${timestamp} [${level.toUpperCase()}] ${message}`;
-      })
+      winston.format.json() // Use JSON format for structured logs
   ),
   transports: [
-    new winston.transports.Console(), // Log to console
+    new winston.transports.Console(),
     new winston.transports.File({
       filename: 'app.log',
       maxsize: 10000000,
       maxFiles: 10,
       zippedArchive: true
-    }) // Save logs to a file
+    })
   ]
 });
 
-// ✅ Middleware to Log Requests with Different Levels
+// ✅ Middleware to Log Requests with User Separation
 app.use((req, res, next) => {
-  // Use query param if provided, otherwise pick a random user from the list
   const userId = req.query.userId || exampleUsers[Math.floor(Math.random() * exampleUsers.length)];
-  req.user = { id: userId }; // Attach user to request object
-  logger.info(`Incoming request from user ${req.user.id}: ${req.method} ${req.url}`);
+  req.user = { id: userId };
+  logger.info({
+    message: 'Incoming request',
+    user: req.user.id,
+    method: req.method,
+    url: req.url
+  });
   next();
 });
-router.use(function (req,res,next) {
+
+router.use((req, res, next) => {
   console.log('/' + req.method);
   next();
 });
+
 // Router
-router.get('/', function(req, res) {
-  logger.debug(`User ${req.user.id} requested index.html`);
+router.get('/', (req, res) => {
+  logger.debug({
+    message: 'User requested index.html',
+    user: req.user.id
+  });
   res.sendFile(path + 'index.html');
 });
 
-router.get('/sharks', function(req, res) {
-  logger.debug(`User ${req.user.id} requested sharks.html`);
+router.get('/sharks', (req, res) => {
+  logger.debug({
+    message: 'User requested sharks.html',
+    user: req.user.id
+  });
   res.sendFile(path + 'sharks.html');
 });
+
 // Simulating Different Log Levels
 app.get('/warn', (req, res) => {
-  logger.warn('This is a warning message');
+  logger.warn({ message: 'This is a warning message', user: req.user.id });
   res.send('Warning logged!');
 });
 
 app.get('/error', (req, res) => {
-  logger.error('An error occurred!');
+  logger.error({ message: 'An error occurred!', user: req.user.id });
   res.status(500).send('Error logged!');
+});
+
+// ✅ New Endpoint to Retrieve Logs for a Specific User
+const fs = require('fs');
+const readline = require('readline');
+
+app.get('/logs/:userId', async (req, res) => {
+  const userId = req.params.userId;
+  const logs = [];
+
+  const fileStream = fs.create_pipe_stream('app.log');
+  const rl = readline.createInterface({
+    input: fileStream,
+    crlfDelay: Infinity
+  });
+
+  for await (const line of rl) {
+    try {
+      const logEntry = JSON.parse(line);
+      if (logEntry.user === userId) {
+        logs.push(logEntry);
+      }
+    } catch (err) {
+      console.error('Error parsing log line:', err);
+    }
+  }
+
+  res.json(logs);
 });
 
 app.use(express.static(path));
 app.use('/', router);
 
-// Only start the server if this file is run directly
 if (require.main === module) {
-  app.listen(port, function() {
-    logger.info(`App listening on port ${port}!`);
+  app.listen(port, () => {
+    logger.info({ message: `App listening on port ${port}!` });
   });
 }
 
