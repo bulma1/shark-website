@@ -9,6 +9,48 @@ resource "aws_security_group" "shark_sg" {
     cidr_blocks = ["0.0.0.0/0"] # Allow HTTP from anywhere
   }
   ingress {
+    from_port   = 5000
+    to_port     = 5000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Allow HTTP from anywhere
+  }
+  ingress {
+    from_port   = 3100
+    to_port     = 3100
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Allow HTTP from anywhere
+  }
+  ingress {
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Allow HTTP from anywhere
+  }
+  ingress {
+    from_port   = 9090
+    to_port     = 9090
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Allow HTTP from anywhere
+  }
+  ingress {
+    from_port   = 9100
+    to_port     = 9100
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Allow HTTP from anywhere
+  }
+  ingress {
+    from_port   = 9323
+    to_port     = 9323
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Allow HTTP from anywhere
+  }
+  ingress {
+    from_port   = 9080
+    to_port     = 9080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Allow HTTP from anywhere
+  }
+  ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
@@ -17,6 +59,12 @@ resource "aws_security_group" "shark_sg" {
   ingress {
     from_port   = 22
     to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Allow SSH (restrict this in production)
+  }
+  ingress {
+    from_port   = 14268
+    to_port     = 14268
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"] # Allow SSH (restrict this in production)
   }
