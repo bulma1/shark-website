@@ -1,0 +1,146 @@
+name: Terraform CI/CD
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+    paths:
+      - 'terraform/backend/**'
+      - 'terraform/deployment/**'
+      - 'terraform/infra/**'
+      - 'terraform/terraform.tfvars'
+      - '.github/workflows/terraform.yml'
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  terraform-plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+    strategy:
+      matrix:
+        dir: [backend, deployment, infra]
+
+    steps:
+      # Checkout the repository
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Setup Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.8
+
+      # Initialize Terraform
+      - name: Terraform Init
+        run: terraform init
+        working-directory: terraform/${{ matrix.dir }}
+
+      # Validate Terraform code
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: terraform/${{ matrix.dir }}
+
+      # Generate Terraform Plan
+      - name: Terraform Plan
+        id: plan
+        run: |
+          terraform plan -no-color -out=tfplan -var-file=../terraform.tfvars
+          terraform show -no-color tfplan > plan.txt
+        working-directory: terraform/${{ matrix.dir }}
+
+      # Create or update PR
+      - name: Create Pull Request
+        id: create-pr
+        if: steps.plan.outcome == 'success'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: dev
+          base: main
+          title: Terraform changes from dev to main
+          body: |
+            Terraform plans for changes in dev branch. Review the plans below and merge to apply.
+          commit-message: Update Terraform configurations from dev
+          delete-branch: false
+
+      # Comment Plan on PR
+      - name: Comment Terraform Plan
+        if: steps.plan.outcome == 'success' && steps.create-pr.outputs.pull-request-number
+        uses: actions/github-script@v7
+        env:
+          PLAN: "${{ github.workspace }}/terraform/${{ matrix.dir }}/plan.txt"
+          DIR: "${{ matrix.dir }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const plan = fs.readFileSync(process.env.PLAN, 'utf8');
+            const delimiter = '```';
+            const body = `
+            ## Terraform Plan - ${process.env.DIR}
+            <details><summary>Click to view plan for ${process.env.DIR}</summary>
+            
+            ${delimiter}terraform
+            ${plan}
+            ${delimiter}
+            </details>
+            `;
+            await github.rest.issues.createComment({
+              issue_number: ${{ steps.create-pr.outputs.pull-request-number }},
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+      # Upload plan artifact
+      - name: Upload Terraform Plan
+        if: steps.plan.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan-${{ matrix.dir }}
+          path: terraform/${{ matrix.dir }}/tfplan
+          retention-days: 1
+
+  terraform-apply:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: terraform-plan
+    strategy:
+      matrix:
+        dir: [backend, deployment, infra]
+
+    steps:
+      # Checkout the repository
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Setup Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.8
+
+      # Download plan artifact
+      - name: Download Terraform Plan
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan-${{ matrix.dir }}
+          path: terraform/${{ matrix.dir }}
+
+      # Initialize Terraform
+      - name: Terraform Init
+        run: terraform init
+        working-directory: terraform/${{ matrix.dir }}
+
+      # Apply Terraform Plan
+      - name: Terraform Apply
+        run: terraform apply -var-file=../terraform.tfvars -auto-approve tfplan
+        working-directory: terraform/${{ matrix.dir }}
