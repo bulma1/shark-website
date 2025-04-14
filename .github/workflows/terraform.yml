@@ -10,7 +10,9 @@ on:
       - 'terraform/infra/**'
       - 'terraform/terraform.tfvars'
       - '.github/workflows/terraform.yml'
-
+  pull_request:
+    branches:
+      - dev
 permissions:
   contents: write
   pull-requests: write
@@ -101,3 +103,4 @@ jobs:
               repo: context.repo.repo,
               body: body
             });
+            
