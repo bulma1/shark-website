@@ -10,9 +10,9 @@ terraform {
 }
 terraform {
   backend "s3" {
-    bucket = "buma-dev-shark-website-s3"
-    key = "shark-website-deployment"
-    region = "us-east-2"
+    bucket               = "buma-dev-shark-website-s3"
+    key                  = "shark-website-deployment"
+    region               = "us-east-2"
     workspace_key_prefix = ""
   }
 }
