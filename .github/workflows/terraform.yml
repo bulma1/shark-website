@@ -35,7 +35,7 @@ jobs:
         with:
           terraform_version: 1.9.8
 
-      # Set AWS Credentials on the runner
+      # Set AWS Credentials
       - name: Configure AWS Credentials
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
