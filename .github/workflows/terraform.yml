@@ -1,9 +1,9 @@
-name: Terraform CI/CD
+name: "Terraform CI/CD"
 
 on:
   push:
     branches:
-      - dev
+      - main
     paths:
       - 'terraform/backend/**'
       - 'terraform/deployment/**'
@@ -12,23 +12,42 @@ on:
       - '.github/workflows/terraform.yml'
   pull_request:
     branches:
+      - main
       - dev
+    paths:
+      - 'terraform/**'
 
-permissions:
-  contents: write
-  pull-requests: write
-  id-token: write
+env:
+  TF_LOG: INFO
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
 
 jobs:
-  terraform-plan:
-    name: Terraform Plan
+  debug-environment-check:
+    name: Debug Environment Secrets
     runs-on: ubuntu-latest
+    steps:
+      - name: Check AWS_ACCESS_KEY_ID
+        run: echo "AWS_ACCESS_KEY_ID is available" || echo "AWS_ACCESS_KEY_ID is not available!"
+      - name: Check AWS_SECRET_ACCESS_KEY
+        run: echo "AWS_SECRET_ACCESS_KEY is available" || echo "AWS_SECRET_ACCESS_KEY is not available!"
+      - name: Check AWS_DEFAULT_REGION
+        run: echo "AWS_DEFAULT_REGION is available" || echo "AWS_DEFAULT_REGION is not available!"
+
+  terraform-plan:
+    name: "Terraform Plan"
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && (github.base_ref == 'main' || github.base_ref == 'dev')
     strategy:
       matrix:
         dir: [backend, deployment, infra]
-
+    defaults:
+      run:
+        shell: bash
+        working-directory: terraform/${{ matrix.dir }}
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup Terraform
@@ -36,64 +55,105 @@ jobs:
         with:
           terraform_version: 1.9.8
 
-      - name: Configure AWS Credentials
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-        run: echo "AWS credentials configured"
+      - name: Cache Terraform Providers
+        uses: actions/cache@v4
+        with:
+          path: ~/.terraform.d/plugin-cache
+          key: terraform-${{ runner.os }}-${{ hashFiles('**/*.tf*') }}
+          restore-keys: terraform-${{ runner.os }}
 
       - name: Terraform Init
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
         run: terraform init
-        working-directory: terraform/${{ matrix.dir }}
 
-      - name: Terraform Fmt
+      - name: Terraform Format Check
         run: terraform fmt -check
-        working-directory: terraform/${{ matrix.dir }}
 
       - name: Terraform Validate
         run: terraform validate
-        working-directory: terraform/${{ matrix.dir }}
 
       - name: Terraform Plan
         id: plan
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
         run: |
-          terraform plan -no-color -out=tfplan -var-file=../terraform.tfvars
+          terraform plan -no-color -input=false -out=tfplan -var-file=../terraform.tfvars
           terraform show -no-color tfplan > plan.txt
-        working-directory: terraform/${{ matrix.dir }}
 
-      - name: Comment Terraform Plan on PR
-        if: github.event_name == 'pull_request'
+      - name: Upload Plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan-${{ matrix.dir }}
+          path: terraform/${{ matrix.dir }}/plan.txt
+
+  comment-on-pr:
+    name: "Comment Terraform Plan on PR"
+    runs-on: ubuntu-latest
+    needs: terraform-plan
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download All Plans
+        uses: actions/download-artifact@v4
+        with:
+          path: ./plans
+
+      - name: Create PR Comment
         uses: actions/github-script@v7
-        env:
-          PLAN: "${{ github.workspace }}/terraform/${{ matrix.dir }}/plan.txt"
-          DIR: "${{ matrix.dir }}"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
-            const plan = fs.readFileSync(process.env.PLAN, 'utf8');
-            const delimiter = '```';
-            const body = `
-            ## Terraform Plan - ${process.env.DIR}
-            <details><summary>Click to view plan for ${process.env.DIR}</summary>
+            const path = require('path');
 
-            ${delimiter}terraform
-            ${plan}
-            ${delimiter}
-            </details>
-            `;
-            await github.rest.issues.createComment({
+            const dirs = ['backend', 'deployment', 'infra'];
+            let body = `# Terraform Plans Preview\n\n`;
+
+            for (const dir of dirs) {
+              const filePath = path.join('plans', `terraform-plan-${dir}`, 'plan.txt');
+              let content = 'No plan found.';
+              if (fs.existsSync(filePath)) {
+                content = fs.readFileSync(filePath, 'utf8');
+              }
+              body += `### Plan for ${dir}\n<details>\n<summary>Click to expand</summary>\n\n\`\`\`terraform\n${content}\n\`\`\`\n</details>\n\n`;
+            }
+
+            github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: body
             });
+
+  terraform-apply:
+    name: "Terraform Apply"
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: terraform-plan
+    strategy:
+      matrix:
+        dir: [backend, deployment, infra]
+    defaults:
+      run:
+        shell: bash
+        working-directory: terraform/${{ matrix.dir }}
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.9.8
+
+      - name: Download Terraform Plan
+        uses: actions/download-artifact@v4
+        with:
+          name: terraform-plan-${{ matrix.dir }}
+          path: terraform/${{ matrix.dir }}
+
+      - name: Terraform Init
+        run: terraform init -backend-config="bucket=${{ secrets.BUCKET_TF_STATE }}"
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
