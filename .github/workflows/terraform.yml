@@ -38,7 +38,7 @@ jobs:
   terraform-plan:
     name: "Terraform Plan"
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/dev'
+    if: github.event_name == 'pull_request' && (github.base_ref == 'main' || github.base_ref == 'dev')
     strategy:
       matrix:
         dir: [backend, deployment, infra]
@@ -127,7 +127,7 @@ jobs:
   terraform-apply:
     name: "Terraform Apply"
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: terraform-plan
     strategy:
       matrix:
