@@ -8,7 +8,7 @@ resource "aws_ecr_repository" "shark-website" {
 }
 resource "aws_ecr_lifecycle_policy" "shark_website_policy" {
   repository = aws_ecr_repository.shark-website.name
-  policy = <<EOF
+  policy     = <<EOF
 {
   "rules": [
     {

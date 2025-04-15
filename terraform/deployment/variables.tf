@@ -19,6 +19,6 @@ variable "environment" {
   }
 }
 variable "account_id" {
-  type = string
+  type    = string
   default = "296062573273"
 }

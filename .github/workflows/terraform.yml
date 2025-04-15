@@ -1,0 +1,99 @@
+name: Terraform CI/CD
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'terraform/backend/**'
+      - 'terraform/deployment/**'
+      - 'terraform/infra/**'
+      - 'terraform/terraform.tfvars'
+      - '.github/workflows/terraform.yml'
+  pull_request:
+    branches:
+      - dev
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  terraform-plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dir: [backend, deployment, infra]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.9.8
+
+      - name: Configure AWS Credentials
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+        run: echo "AWS credentials configured"
+
+      - name: Terraform Init
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+        run: terraform init
+        working-directory: terraform/${{ matrix.dir }}
+
+      - name: Terraform Fmt
+        run: terraform fmt -check
+        working-directory: terraform/${{ matrix.dir }}
+
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: terraform/${{ matrix.dir }}
+
+      - name: Terraform Plan
+        id: plan
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+        run: |
+          terraform plan -no-color -out=tfplan -var-file=../terraform.tfvars
+          terraform show -no-color tfplan > plan.txt
+        working-directory: terraform/${{ matrix.dir }}
+
+      - name: Comment Terraform Plan on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        env:
+          PLAN: "${{ github.workspace }}/terraform/${{ matrix.dir }}/plan.txt"
+          DIR: "${{ matrix.dir }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const plan = fs.readFileSync(process.env.PLAN, 'utf8');
+            const delimiter = '```';
+            const body = `
+            ## Terraform Plan - ${process.env.DIR}
+            <details><summary>Click to view plan for ${process.env.DIR}</summary>
+
+            ${delimiter}terraform
+            ${plan}
+            ${delimiter}
+            </details>
+            `;
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });

@@ -8,8 +8,6 @@ yarn-error.log
 *.tfstate
 *.tfstate.backup
 *.tfstate.*.backup
-terraform.tfvars
-*.tfvars
 .terraform/
 terraform.lock.hcl
 crash.log

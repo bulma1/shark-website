@@ -254,8 +254,8 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
         ]
       },
       {
-        "Effect": "Allow",
-        "Action": [
+        "Effect" : "Allow",
+        "Action" : [
           "codedeploy:GetDeploymentConfig",
           "codedeploy:CreateDeployment",
           "codedeploy:GetApplication",
@@ -263,7 +263,7 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
           "codedeploy:ListDeployments",
           "codedeploy:RegisterApplicationRevision"
         ],
-        "Resource": "*"
+        "Resource" : "*"
       }
     ]
   })
