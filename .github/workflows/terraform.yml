@@ -2,15 +2,12 @@ name: "Terraform CI/CD"
 
 on:
   pull_request:
-    branches:
-      - main
-    paths:
-      - 'terraform/**'
+    branches: [main]
+    paths: ['terraform/**']
   push:
-    branches:
-      - main
-    paths:
-      - 'terraform/**'
+    branches: [main]
+    paths: ['terraform/**']
+
 
 env:
   TF_LOG: INFO
@@ -124,6 +121,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: terraform-plan
+    environment: production
+
     strategy:
       matrix:
         dir: [backend, deployment, infra]
@@ -131,21 +130,36 @@ jobs:
       run:
         shell: bash
         working-directory: terraform/${{ matrix.dir }}
-    environment: production
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.9.8
+          fetch-depth: 0
 
-      - name: Download Terraform Plan
+      - name: Debug Context
+        run: |
+          echo "GITHUB_EVENT_NAME: $GITHUB_EVENT_NAME"
+          echo "GITHUB_REF: $GITHUB_REF"
+          echo "GITHUB_SHA: $GITHUB_SHA"
+          ls -la
+
+      - name: Download Plan Artifact
         uses: actions/download-artifact@v4
         with:
           name: terraform-plan-${{ matrix.dir }}
           path: terraform/${{ matrix.dir }}
+
+      - name: Verify Plan Exists
+        run: |
+          if [ ! -f tfplan ]; then
+            echo "::error::Terraform plan file not found!"
+            exit 1
+          fi
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.9.8
 
       - name: Terraform Init
         run: terraform init -backend-config="bucket=${{ secrets.BUCKET_TF_STATE }}"
