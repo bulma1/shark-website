@@ -27,8 +27,8 @@ resource "aws_security_group" "shark_sg" {
     cidr_blocks = ["0.0.0.0/0"] # Allow HTTP from anywhere
   }
   ingress {
-    from_port   = 3009
-    to_port     = 3009
+    from_port   = 3010
+    to_port     = 3010
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"] # Allow HTTP from anywhere
   }
