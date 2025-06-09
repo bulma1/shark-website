@@ -61,7 +61,7 @@ jobs:
         run: sleep 5  # Wait for the server to start
 
       - name: "🔎 Test running container"
-        run: curl --fail http://localhost:8089 || exit 1
+        run: curl --fail http://localhost:8080 || exit 1
 
       - name: " 💥 Stop and remove container"
         run: docker stop shark-website && docker rm shark-website
