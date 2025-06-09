@@ -54,12 +54,52 @@ router.get('/', (req, res) => {
   res.sendFile(path + 'index.html');
 });
 
-router.get('/sharks', (req, res) => {
+router.get('/about', (req, res) => {
   logger.debug({
-    message: 'User requested sharks.html',
+    message: 'User requested about.html',
     user: req.user.id
   });
-  res.sendFile(path + 'sharks.html');
+  res.sendFile(path + 'about.html');
+});
+
+router.get('/contact', (req, res) => {
+  logger.debug({
+    message: 'User requested contact.html',
+    user: req.user.id
+  });
+  res.sendFile(path + 'contact.html');
+});
+
+router.get('/cats/breeds', (req, res) => {
+  logger.debug({
+    message: 'User requested breeds.html',
+    user: req.user.id
+  });
+  res.sendFile(path + 'cats/breeds.html');
+});
+
+router.get('/cats/care-guide', (req, res) => {
+  logger.debug({
+    message: 'User requested care-guide.html',
+    user: req.user.id
+  });
+  res.sendFile(path + 'cats/care-guide.html');
+});
+
+router.get('/cats/health', (req, res) => {
+  logger.debug({
+    message: 'User requested health.html',
+    user: req.user.id
+  });
+  res.sendFile(path + 'cats/health.html');
+});
+
+router.get('/cats/memes', (req, res) => {
+  logger.debug({
+    message: 'User requested memes.html',
+    user: req.user.id
+  });
+  res.sendFile(path + 'cats/memes.html');
 });
 
 // Simulating Different Log Levels
