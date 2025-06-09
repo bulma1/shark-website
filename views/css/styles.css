@@ -1,50 +1,309 @@
-.navbar {
-    margin-bottom: 0;
+/* Main stylesheet */
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Roboto:wght@400;500;700&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css');
+
+:root {
+    --primary-color: #0048CD;
+    --secondary-color: #6c757d;
+    --dark-color: #020A1B;
+    --light-color: #f8f9fa;
+    --accent-color: #FF6B6B;
+    --gradient-primary: linear-gradient(135deg, var(--primary-color), #0066FF);
 }
 
 body {
-    background: #020A1B;
-    color: #ffffff;
-    font-family: 'Merriweather', sans-serif;
+    font-family: 'Roboto', sans-serif;
+    background: var(--dark-color);
+    color: var(--light-color);
+    line-height: 1.6;
+    overflow-x: hidden;
 }
 
-h1,
-h2 {
-    font-weight: bold;
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Merriweather', serif;
+    font-weight: 700;
+    color: var(--light-color);
+    margin-bottom: 1rem;
 }
 
-p {
-    font-size: 16px;
-    color: #ffffff;
+/* Navigation */
+.navbar {
+    background-color: rgba(2, 10, 27, 0.95) !important;
+    border-bottom: 2px solid var(--primary-color);
+    padding: 1rem 0;
+    transition: all 0.3s ease;
 }
 
+.navbar.scrolled {
+    padding: 0.5rem 0;
+    background-color: rgba(2, 10, 27, 0.98) !important;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--light-color) !important;
+    transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover {
+    transform: scale(1.05);
+}
+
+.nav-link {
+    font-weight: 500;
+    position: relative;
+    padding: 0.5rem 1rem !important;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background-color: var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+    left: 0;
+}
+
+/* Jumbotron/Hero */
 .jumbotron {
-    background: #0048CD;
+    background: var(--gradient-primary),
+    url('../assets/images/cat-pattern.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     color: white;
-    text-align: center;
+    padding: 8rem 0;
+    margin-bottom: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+.jumbotron::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+}
+
+.jumbotron .container {
+    position: relative;
+    z-index: 2;
+}
+
+.jumbotron h1 {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 1s ease;
 }
 
 .jumbotron p {
-    color: white;
-    font-size: 26px;
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    animation: fadeInUp 1s ease 0.2s;
+    opacity: 0;
+    animation-fill-mode: forwards;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+}
+
+.card-img-top {
+    height: 250px;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.card-title {
+    color: var(--light-color);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Buttons */
+.btn {
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
 }
 
 .btn-primary {
-    color: #fff;
-    text-color: #000000;
-    border-color: white;
-    margin-bottom: 5px;
+    background: var(--gradient-primary);
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 72, 205, 0.3);
 }
 
-img,
-video,
-audio {
-    margin-top: 20px;
-    max-width: 80%;
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 72, 205, 0.4);
 }
 
-div.caption {    
-    float: left;
-    clear: both;
+.btn-outline-light {
+    border-width: 2px;
+    background: transparent;
 }
 
+.btn-outline-light:hover {
+    background: var(--light-color);
+    color: var(--dark-color);
+}
+
+/* Newsletter Section */
+.bg-secondary {
+    background: rgba(108, 117, 125, 0.1) !important;
+    backdrop-filter: blur(10px);
+}
+
+/* Footer */
+footer {
+    background-color: rgba(2, 10, 27, 0.98);
+    padding: 4rem 0 2rem;
+    position: relative;
+}
+
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-primary);
+}
+
+footer a {
+    color: var(--light-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+footer a:hover {
+    color: var(--primary-color);
+    transform: translateX(5px);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 1s ease-in;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gradient-primary);
+    border-radius: 6px;
+    border: 3px solid var(--dark-color);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .jumbotron {
+        padding: 4rem 0;
+    }
+
+    .jumbotron h1 {
+        font-size: 2.5rem;
+    }
+
+    .jumbotron p {
+        font-size: 1.2rem;
+    }
+
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+
+    .card-img-top {
+        height: 200px;
+    }
+}
+
+/* Utility Classes */
+.text-shadow {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.bg-blur {
+    backdrop-filter: blur(10px);
+    background-color: rgba(2, 10, 27, 0.7);
+}
+
+/* Form Controls */
+.form-control {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    color: var(--light-color);
+    padding: 0.8rem 1.2rem;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: var(--light-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(0, 72, 205, 0.25);
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}

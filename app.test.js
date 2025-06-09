@@ -7,7 +7,7 @@ describe('Express App Routes', () => {
         expect(response.status).toBe(200);
     });
 
-    test('GET /sharks should return sharks.html', async () => {
+    test('GET /sharks should return about.html', async () => {
         const response = await request(app).get('/sharks');
         expect(response.status).toBe(200);
     });

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Cat Memes | Everything Cats</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .meme-section {
+            padding: 4rem 0;
+        }
+        .meme-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+        .meme-card:hover {
+            transform: translateY(-10px);
+        }
+        .meme-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+        .meme-info {
+            padding: 1.5rem;
+        }
+        .meme-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+        .meme-description {
+            color: var(--light-color);
+            opacity: 0.8;
+        }
+        .meme-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="../index.html">🐾 Everything Cats</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="../index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="breeds.html">Breeds</a></li>
+                    <li class="nav-item"><a class="nav-link" href="care-guide.html">Care Guide</a></li>
+                    <li class="nav-item"><a class="nav-link" href="health.html">Health</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="memes.html">Cat Memes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../about.html">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../contact.html">Contact</a></li>
+                </ul>
+                <form class="d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Search...">
+                    <button class="btn btn-outline-light" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="jumbotron jumbotron-fluid text-center" style="background-image: linear-gradient(rgba(0, 72, 205, 0.8), rgba(0, 72, 205, 0.9)), url('../assets/images/memes/grumpy-cat.jpg');">
+        <div class="container">
+            <h1 class="display-4">Cat Memes</h1>
+            <p class="lead">The internet's favorite feline moments</p>
+        </div>
+    </div>
+
+    <!-- Memes Section -->
+    <section class="meme-section">
+        <div class="container">
+            <div class="row">
+                <!-- Grumpy Cat -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="meme-card">
+                        <img src="../assets/images/memes/cryingcat.jpg" class="meme-image" alt="Crying Cat">
+                        <div class="meme-info">
+                            <h3 class="meme-title">Crying Cat</h3>
+                            <p class="meme-description">The original internet grump, Tardar Sauce became a global sensation with her permanent frown.</p>
+                            <div class="meme-stats">
+                                <div class="stat-item">
+                                    <div class="stat-value">8.5M</div>
+                                    <div class="stat-label">Followers</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">2012</div>
+                                    <div class="stat-label">Debut</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Keyboard Cat -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="meme-card">
+                        <img src="../assets/images/memes/cute.jpg" class="meme-image" alt="Cute Cat">
+                        <div class="meme-info">
+                            <h3 class="meme-title">Cute Cat</h3>
+                            <p class="meme-description">The original "play him off" cat that started a trend of ending videos with a cat playing piano.</p>
+                            <div class="meme-stats">
+                                <div class="stat-item">
+                                    <div class="stat-value">50M+</div>
+                                    <div class="stat-label">Views</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">2007</div>
+                                    <div class="stat-label">Debut</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nyan Cat -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="meme-card">
+                        <img src="../assets/images/memes/catsideeye.jpg" class="meme-image" alt="Cat Side Eye">
+                        <div class="meme-info">
+                            <h3 class="meme-title">Cat Side Eye</h3>
+                            <p class="meme-description">The pop-tart cat that flew through space with a rainbow trail, accompanied by catchy music.</p>
+                            <div class="meme-stats">
+                                <div class="stat-item">
+                                    <div class="stat-value">200M+</div>
+                                    <div class="stat-label">Views</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">2011</div>
+                                    <div class="stat-label">Debut</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business Cat -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="meme-card">
+                        <img src="../assets/images/memes/likecat.jpg" class="meme-image" alt="Like Cat">
+                        <div class="meme-info">
+                            <h3 class="meme-title">Like Cat</h3>
+                            <p class="meme-description">The corporate feline who knows how to handle important business matters.</p>
+                            <div class="meme-stats">
+                                <div class="stat-item">
+                                    <div class="stat-value">1M+</div>
+                                    <div class="stat-label">Uses</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">2010</div>
+                                    <div class="stat-label">Debut</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Long Cat -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="meme-card">
+                        <img src="../assets/images/memes/angry.jpg" class="meme-image" alt="Angry Cat">
+                        <div class="meme-info">
+                            <h3 class="meme-title">Angry Cat</h3>
+                            <p class="meme-description">The original long cat that started the trend of stretching cat photos to ridiculous lengths.</p>
+                            <div class="meme-stats">
+                                <div class="stat-item">
+                                    <div class="stat-value">500K+</div>
+                                    <div class="stat-label">Variations</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">2006</div>
+                                    <div class="stat-label">Debut</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Surprised Cat -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="meme-card">
+                        <img src="../assets/images/memes/shocked-surprised.jpg" class="meme-image" alt="Surprised Cat">
+                        <div class="meme-info">
+                            <h3 class="meme-title">Surprised Cat</h3>
+                            <p class="meme-description">The perfect reaction image for any surprising situation.</p>
+                            <div class="meme-stats">
+                                <div class="stat-item">
+                                    <div class="stat-value">2M+</div>
+                                    <div class="stat-label">Uses</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">2013</div>
+                                    <div class="stat-label">Debut</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Everything Cats</h5>
+                    <p>Dedicated to providing accurate information about feline care and breeds.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="breeds.html" class="text-white">Cat Breeds</a></li>
+                        <li><a href="care-guide.html" class="text-white">Care Guide</a></li>
+                        <li><a href="health.html" class="text-white">Health</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Connect</h5>
+                    <a href="#" class="text-white me-2"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-white me-2"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="text-white me-2"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="text-white"><i class="bi bi-pinterest"></i></a>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p class="mb-0">&copy; 2025 Everything Cats. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Navbar scroll behavior
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html> 

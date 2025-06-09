@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const router = express.Router();
 const path = __dirname + '/views/';
-const port = 8080;
+const port = 8089;
 const winston = require('winston');
 
 // List of example users
@@ -56,10 +56,10 @@ router.get('/', (req, res) => {
 
 router.get('/sharks', (req, res) => {
   logger.debug({
-    message: 'User requested sharks.html',
+    message: 'User requested about.html',
     user: req.user.id
   });
-  res.sendFile(path + 'sharks.html');
+  res.sendFile(path + 'about.html');
 });
 
 // Simulating Different Log Levels
