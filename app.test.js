@@ -7,8 +7,33 @@ describe('Express App Routes', () => {
         expect(response.status).toBe(200);
     });
 
-    test('GET /sharks should return about.html', async () => {
-        const response = await request(app).get('/sharks');
+    test('GET /about should return about.html', async () => {
+        const response = await request(app).get('/about');
+        expect(response.status).toBe(200);
+    });
+
+    test('GET /contact should return contact.html', async () => {
+        const response = await request(app).get('/contact');
+        expect(response.status).toBe(200);
+    });
+
+    test('GET /cats/breeds should return breeds.html', async () => {
+        const response = await request(app).get('/cats/breeds');
+        expect(response.status).toBe(200);
+    });
+
+    test('GET /cats/care-guide should return care-guide.html', async () => {
+        const response = await request(app).get('/cats/care-guide');
+        expect(response.status).toBe(200);
+    });
+
+    test('GET /cats/health should return health.html', async () => {
+        const response = await request(app).get('/cats/health');
+        expect(response.status).toBe(200);
+    });
+
+    test('GET /cats/memes should return memes.html', async () => {
+        const response = await request(app).get('/cats/memes');
         expect(response.status).toBe(200);
     });
 
