@@ -1,5 +1,6 @@
 require ('./tracing');
 const express = require('express');
+const crypto = require('crypto');
 const app = express();
 const router = express.Router();
 const path = __dirname + '/views/';
@@ -29,7 +30,7 @@ const logger = winston.createLogger({
 
 // ✅ Middleware to Log Requests with User Separation
 app.use((req, res, next) => {
-  const userId = req.query.userId || exampleUsers[Math.floor(Math.random() * exampleUsers.length)];
+  const userId = req.query.userId || exampleUsers[crypto.randomInt(0, exampleUsers.length)];
   req.user = { id: userId };
   logger.info({
     message: 'Incoming request',
