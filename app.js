@@ -117,8 +117,16 @@ app.get('/error', (req, res) => {
 // ✅ New Endpoint to Retrieve Logs for a Specific User
 const fs = require('fs');
 const readline = require('readline');
+const RateLimit = require('express-rate-limit');
 
-app.get('/logs/:userId', async (req, res) => {
+// Configure rate limiter: maximum of 10 requests per minute
+const logsRateLimiter = RateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 10, // max 10 requests per windowMs
+  message: 'Too many requests, please try again later.'
+});
+
+app.get('/logs/:userId', logsRateLimiter, async (req, res) => {
   const userId = req.params.userId;
   const logs = [];
 
