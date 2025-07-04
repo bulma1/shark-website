@@ -20,7 +20,7 @@
     "@opentelemetry/auto-instrumentations-node": "^0.57.1",
     "@opentelemetry/exporter-jaeger": "^2.0.0",
     "@opentelemetry/exporter-trace-otlp-http": "^0.200.0",
-    "@opentelemetry/sdk-node": "^0.200.0",
+    "@opentelemetry/sdk-node": "^0.201.1",
     "express": "^4.16.4",
     "morgan": "^1.10.0",
     "winston": "^3.17.0",
